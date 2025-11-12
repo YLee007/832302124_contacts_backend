@@ -1,0 +1,41 @@
+// Prisma Schema for Contacts Management System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" //先改用本地sql，云postgresql库异常
+  url      = env("DATABASE_URL")
+}
+
+model Contact {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(50)
+  phone     String   @unique @db.VarChar(11)
+  email     String?  @db.VarChar(100)
+  address   String?  @db.VarChar(200)
+  company   String?  @db.VarChar(100)
+  notes     String?  @db.VarChar(500)
+  tags      String[] @default([]) // 添加 tags 字段
+  isFavorite Boolean  @default(false) // Add isFavorite field
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([name])
+  @@index([phone])
+  @@index([createdAt])
+  @@map("contacts")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
